@@ -1,10 +1,12 @@
 package com.example.atividade_2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -13,12 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class MainActivity extends AppCompatActivity {
-
-    Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +28,35 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://argo.td.utfpr.edu.br/locadora-war/ws/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
         if (!isNetworkAvailable()) {
             exibirAlertaSemInternet();
-            return; // Interrompe o fluxo para não tentar buscar marcas offline
+            return;
         }
+
+        Button btnMarcas = findViewById(R.id.btnMarcas);
+        Button btnModelos = findViewById(R.id.btnModelos);
+        Button btnCidades = findViewById(R.id.btnCidades);
+        Button btnAnuncios = findViewById(R.id.btnAnuncios);
+
+        btnMarcas.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, MarcasActivity.class);
+            startActivity(intent);
+        });
+
+        btnModelos.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ModelosActivity.class);
+            startActivity(intent);
+        });
+
+        btnCidades.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CidadesActivity.class);
+            startActivity(intent);
+        });
+
+        btnAnuncios.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AnunciosActivity.class);
+            startActivity(intent);
+        });
     }
 
     private boolean isNetworkAvailable() {
@@ -62,8 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage("Este aplicativo requer conexão com a internet para funcionar e não pode ser usado offline.")
                 .setCancelable(false) // Impede que o usuário feche o alerta clicando fora
                 .setPositiveButton("Sair", (dialog, which) -> {
-                    finish(); // Fecha o aplicativo
+                    finish();
                 })
                 .show();
     }
+    
 }

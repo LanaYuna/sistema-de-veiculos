@@ -6,48 +6,20 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Gerenciamento de Marcas"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp"/>
-
     <EditText
-        android:id="@+id/edMarca"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nome da Marca"
-        android:inputType="text"
-        android:layout_marginBottom="8dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+        android:hint="Nome da marca"
+        android:id="@+id/edMarca"/>
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
-
-        <Button
-            android:id="@+id/btConfirmar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Salvar"
-            android:layout_marginEnd="8dp"/>
-
-        <Button
-            android:id="@+id/btRemover"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Remover"
-            android:backgroundTint="#D32F2F"/>
-    </LinearLayout>
-
+        android:text="Confirmar"
+        android:id="@+id/btnConfirmar"/>
     <ListView
-        android:id="@+id/lista_marcas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0sp"
+        android:layout_weight="1"
+        android:id="@+id/lista_marcas"/>
 
 </LinearLayout>
