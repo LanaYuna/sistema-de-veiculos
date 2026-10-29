@@ -124,7 +124,7 @@ public class MarcasActivity extends AppCompatActivity {
         });
     }
 
-    void alterar(Marca marca, int posicao){
+    void alterar(Marca marca){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Editar marca");
 
@@ -144,7 +144,6 @@ public class MarcasActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Marca> call, Response<Marca> response) {
                         if (response.isSuccessful()) {
-                            // Atualiza na lista local
                             marca.setNome(novoNome);
                             adapter.notifyDataSetChanged();
                             Toast.makeText(MarcasActivity.this, "Editado com sucesso", Toast.LENGTH_SHORT).show();
@@ -163,7 +162,6 @@ public class MarcasActivity extends AppCompatActivity {
 
         builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
         builder.show();
-
     }
 
     void remover(Marca marca) {
@@ -211,7 +209,7 @@ public class MarcasActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case 1:
-                alterar(marca, info.position);
+                alterar(marca);
                 return true;
 
             case 2:

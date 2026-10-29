@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Sem Conexão com a Internet")
                 .setMessage("Este aplicativo requer conexão com a internet para funcionar e não pode ser usado offline.")
-                .setCancelable(false) // Impede que o usuário feche o alerta clicando fora
+                .setCancelable(false)
                 .setPositiveButton("Sair", (dialog, which) -> {
                     finish();
                 })
