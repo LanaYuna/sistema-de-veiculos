@@ -14,19 +14,19 @@ import retrofit2.http.Path;
 
 public interface MarcaAPIService {
 
-    @POST("marca")
-    Call<Void> inserir(@Body Marca m);
+    @POST("marcas")
+    Call<Marca> inserir(@Body Marca m);
 
-    @GET("marca")
+    @GET("marcas")
     Call<List<Marca>> listar();
 
-    @GET("marca/{id}")
+    @GET("marcas/{id}")
     Call<Marca> buscar(@Path("id") long idMarca);
 
-    @PUT("marca/{id}")
-    Call<Void> alterar(@Path("id") long id, @Body Marca m);
+    @PUT("marcas/{id}")
+    Call<Marca> alterar(@Path("id") long id, @Body Marca m);
 
-    @DELETE("marca/{id}")
+    @DELETE("marcas/{id}")
     Call<Void> remover(@Path("id") long id);
 
 }

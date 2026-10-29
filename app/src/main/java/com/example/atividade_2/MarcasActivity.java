@@ -1,7 +1,11 @@
 package com.example.atividade_2;
 
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -37,7 +42,7 @@ public class MarcasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_marcas);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -54,7 +59,11 @@ public class MarcasActivity extends AppCompatActivity {
         lista.setAdapter( adapter );
         lista.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
+        registerForContextMenu(lista);
+
         service = RetrofitClient.getClient().create(MarcaAPIService.class);
+
+        buscarMarcas();
 
         findViewById(R.id.btnConfirmar).setOnClickListener(
                 (v) -> {confirmar();}
@@ -63,52 +72,34 @@ public class MarcasActivity extends AppCompatActivity {
     }
 
     void confirmar(){
-        String novaMarca = edMarca.getText().toString();
-        if (!novaMarca.isBlank()) {
+        String nomeMarca = edMarca.getText().toString();
+        if (!nomeMarca.isBlank()) {
             Marca m = new Marca();
-            m.setNome(novaMarca);
+            m.setNome(nomeMarca);
             edMarca.setText("");
-            Call<Void> req = service.inserir( m );
-            req.enqueue(new Callback<Void>() {
+            Call<Marca> req = service.inserir( m );
+            req.enqueue(new Callback<Marca>() {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        adapter.add(novaMarca);
+                public void onResponse(Call<Marca> call, Response<Marca> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Marca marcaCriadaServidor = response.body();
+                        adapter.add(marcaCriadaServidor);
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(MarcasActivity.this, "Marca salva com sucesso!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
-                public void onFailure(Call<Void> call, Throwable throwable) {
+                public void onFailure(Call<Marca> call, Throwable throwable) {
                     throwable.printStackTrace();
                     Toast.makeText(MarcasActivity.this,
                             "Erro: "+throwable.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            Toast.makeText(this, "Digite o nome da marca", Toast.LENGTH_SHORT).show();
         }
     }
-
-    void remover() {
-        int pos = lista.getCheckedItemPosition();
-        if (pos < 0) {
-            Toast.makeText(this,"Selecione a marca a remover",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Marca m = marcas.get( pos );
-        Call<Void> req = service.remover( m.getId() );
-        req.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            if (response.isSuccessful())
-                                adapter.remove(m);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable throwable) { }
-                    }
-        );
-    }
-
     void buscarMarcas() {
         Call<List<Marca>> busca = service.listar();
         busca.enqueue(new Callback<List<Marca>>() {
@@ -119,6 +110,7 @@ public class MarcasActivity extends AppCompatActivity {
                     List<Marca> ret = response.body();
                     adapter.clear();
                     adapter.addAll( ret );
+                    adapter.notifyDataSetChanged();
                 }
             }
 
@@ -130,6 +122,105 @@ public class MarcasActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    void alterar(Marca marca, int posicao){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Editar marca");
+
+        final EditText input = new EditText(this);
+        input.setText(marca.getNome());
+        builder.setView(input);
+
+        builder.setPositiveButton("Salvar", (dialog, which) -> {
+            String novoNome = input.getText().toString().trim();
+            if (!novoNome.isEmpty()) {
+                Marca marcaAtualizada = new Marca();
+                marcaAtualizada.setId(marca.getId());
+                marcaAtualizada.setNome(novoNome);
+
+                Call<Marca> req = service.alterar(marca.getId(), marcaAtualizada);
+                req.enqueue(new Callback<Marca>() {
+                    @Override
+                    public void onResponse(Call<Marca> call, Response<Marca> response) {
+                        if (response.isSuccessful()) {
+                            // Atualiza na lista local
+                            marca.setNome(novoNome);
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(MarcasActivity.this, "Editado com sucesso", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MarcasActivity.this, "Erro ao atualizar no servidor", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Marca> call, Throwable throwable) {
+                        Toast.makeText(MarcasActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+        builder.show();
+
+    }
+
+    void remover(Marca marca) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Tem certeza que deseja remover?");
+
+        builder.setPositiveButton("Sim", (dialog, which) -> {
+            Call<Void> req = service.remover(marca.getId());
+            req.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        adapter.remove(marca);
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(MarcasActivity.this, "Removido com sucesso", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MarcasActivity.this, "Erro: Não é possível remover itens com dependência", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable throwable) {
+                    Toast.makeText(MarcasActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        builder.setNegativeButton("Não", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Opções de marca");
+        menu.add(0, 1, 0, "Editar marca");
+        menu.add(0, 2, 1, "Remover marca");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        if(info == null) return super.onContextItemSelected(item);
+        Marca marca = marcas.get(info.position);
+
+        switch (item.getItemId()) {
+            case 1:
+                alterar(marca, info.position);
+                return true;
+
+            case 2:
+                remover(marca);
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
 }

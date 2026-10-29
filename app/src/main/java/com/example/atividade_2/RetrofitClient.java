@@ -4,7 +4,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "https://argo.td.utfpr.edu.br/anuncios/ws/";
+    private static final String BASE_URL = "https://argo.td.utfpr.edu.br/ws/carros/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
