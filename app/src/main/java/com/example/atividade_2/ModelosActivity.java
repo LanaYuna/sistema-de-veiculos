@@ -66,10 +66,9 @@ public class ModelosActivity extends AppCompatActivity {
 
         modelos = new ArrayList<>();
         adapterModelo = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice,
+                android.R.layout.simple_list_item_1,
                 modelos);
         lista.setAdapter(adapterModelo);
-        lista.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
         registerForContextMenu(lista);
 
@@ -83,7 +82,6 @@ public class ModelosActivity extends AppCompatActivity {
         // Carrega as marcas para preencher o Spinner de marcas e depois busca os modelos
         carregarMarcasParaSpinner();
 
-        // Botão Salvar / Inserir
         findViewById(R.id.btSalvarModelo).setOnClickListener(v -> confirmar());
     }
 
@@ -99,22 +97,37 @@ public class ModelosActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Marca>> call, Response<List<Marca>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    listaMarcasDoServidor = response.body();
-                    ArrayAdapter<Marca> adapterMarca = new ArrayAdapter<>(ModelosActivity.this,
-                            android.R.layout.simple_spinner_dropdown_item, listaMarcasDoServidor);
-                    spinnerMarca.setAdapter(adapterMarca);
+                    List<Marca> listaMarcas = response.body();
+
+                    ArrayAdapter<Marca> adapterSpinnerMarca = new ArrayAdapter<>(
+                            ModelosActivity.this,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            listaMarcas
+                    );
+                    spinnerMarca.setAdapter(adapterSpinnerMarca);
+
+                    spinnerMarca.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            Marca marcaSelecionada = (Marca) parent.getItemAtPosition(position);
+                            buscarModelos(marcaSelecionada.getId());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            buscarModelos(null);
+                        }
+                    });
                 }
-                // Após carregar as marcas, busca os modelos cadastrados
-                buscarModelos();
             }
 
             @Override
             public void onFailure(Call<List<Marca>> call, Throwable t) {
                 Toast.makeText(ModelosActivity.this, "Erro ao carregar marcas", Toast.LENGTH_SHORT).show();
-                buscarModelos();
             }
         });
     }
+
 
     void confirmar() {
         String nomeModelo = edNomeModelo.getText().toString().trim();
@@ -129,7 +142,6 @@ public class ModelosActivity extends AppCompatActivity {
             return;
         }
 
-        // Pega a marca selecionada no Spinner
         Marca marcaSelecionada = (Marca) spinnerMarca.getSelectedItem();
         String tipoSelecionado = spinnerTipo.getSelectedItem().toString();
 
@@ -161,9 +173,8 @@ public class ModelosActivity extends AppCompatActivity {
         });
     }
 
-    void buscarModelos() {
-        // Passando null no parâmetro marca para listar todos, ou você pode filtrar se desejar
-        Call<List<Modelo>> busca = serviceModelo.listar(null);
+    void buscarModelos(Long idMarcaFiltro) {
+        Call<List<Modelo>> busca = serviceModelo.listar(idMarcaFiltro);
         busca.enqueue(new Callback<List<Modelo>>() {
             @Override
             public void onResponse(Call<List<Modelo>> call, Response<List<Modelo>> response) {
@@ -192,7 +203,7 @@ public class ModelosActivity extends AppCompatActivity {
         builder.setPositiveButton("Salvar", (dialog, which) -> {
             String novoNome = input.getText().toString().trim();
             if (!novoNome.isEmpty()) {
-                modelo.setNome(novoNome); // Mantém o ID e os outros atributos originais
+                modelo.setNome(novoNome);
 
                 Call<Modelo> req = serviceModelo.alterar(modelo.getId(), modelo);
                 req.enqueue(new Callback<Modelo>() {

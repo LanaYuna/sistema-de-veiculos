@@ -48,28 +48,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btSalvarModelo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
-
-        <Button
-            android:id="@+id/btSalvarModelo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Salvar"
-            android:layout_marginEnd="8dp"/>
-
-        <Button
-            android:id="@+id/btRemoverModelo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Remover"
-            android:backgroundTint="#D32F2F"/>
-    </LinearLayout>
+        android:text="Salvar"
+        android:layout_marginEnd="8dp"/>
 
     <ListView
         android:id="@+id/lista_modelos"

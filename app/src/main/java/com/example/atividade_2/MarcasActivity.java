@@ -34,7 +34,7 @@ public class MarcasActivity extends AppCompatActivity {
 
     MarcaAPIService service;
     ArrayList<Marca> marcas;
-    ArrayAdapter<Marca> adapter;
+    ArrayAdapter<Marca> adapterMarca;
     ListView lista;
     EditText edMarca;
 
@@ -53,11 +53,10 @@ public class MarcasActivity extends AppCompatActivity {
         lista = findViewById(R.id.lista_marcas);
 
         marcas = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice,
+        adapterMarca = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
                 marcas);
-        lista.setAdapter( adapter );
-        lista.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        lista.setAdapter( adapterMarca );
 
         registerForContextMenu(lista);
 
@@ -83,8 +82,8 @@ public class MarcasActivity extends AppCompatActivity {
                 public void onResponse(Call<Marca> call, Response<Marca> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         Marca marcaCriadaServidor = response.body();
-                        adapter.add(marcaCriadaServidor);
-                        adapter.notifyDataSetChanged();
+                        adapterMarca.add(marcaCriadaServidor);
+                        adapterMarca.notifyDataSetChanged();
                         Toast.makeText(MarcasActivity.this, "Marca salva com sucesso!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -108,9 +107,9 @@ public class MarcasActivity extends AppCompatActivity {
                                    Response<List<Marca>> response) {
                 if (response.isSuccessful()) {
                     List<Marca> ret = response.body();
-                    adapter.clear();
-                    adapter.addAll( ret );
-                    adapter.notifyDataSetChanged();
+                    adapterMarca.clear();
+                    adapterMarca.addAll( ret );
+                    adapterMarca.notifyDataSetChanged();
                 }
             }
 
@@ -145,7 +144,7 @@ public class MarcasActivity extends AppCompatActivity {
                     public void onResponse(Call<Marca> call, Response<Marca> response) {
                         if (response.isSuccessful()) {
                             marca.setNome(novoNome);
-                            adapter.notifyDataSetChanged();
+                            adapterMarca.notifyDataSetChanged();
                             Toast.makeText(MarcasActivity.this, "Editado com sucesso", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(MarcasActivity.this, "Erro ao atualizar no servidor", Toast.LENGTH_SHORT).show();
@@ -174,8 +173,8 @@ public class MarcasActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        adapter.remove(marca);
-                        adapter.notifyDataSetChanged();
+                        adapterMarca.remove(marca);
+                        adapterMarca.notifyDataSetChanged();
                         Toast.makeText(MarcasActivity.this, "Removido com sucesso", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(MarcasActivity.this, "Erro: Não é possível remover itens com dependência", Toast.LENGTH_LONG).show();

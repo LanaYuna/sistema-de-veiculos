@@ -46,4 +46,9 @@ public class Modelo {
     public void setIdMarca(Long idMarca) {
         this.idMarca = idMarca;
     }
+
+    @Override
+    public String toString() {
+        return this.nome;
+    }
 }
