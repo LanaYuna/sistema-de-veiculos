@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface CidadeAPIService {
 
@@ -18,13 +19,10 @@ public interface CidadeAPIService {
     Call<Cidade> inserir(@Body Cidade c);
 
     @GET("cidades")
-    Call<List<Cidade>> listar();
-
-    @GET("cidades/{id}")
-    Call<Cidade> buscar(@Path("nome") String nome);
+    Call<List<Cidade>> listar(@Query("nome") String nomeCidade);
 
     @PUT("cidades/{id}")
-    Call<Cidade> alterar(@Path("id") long id, @Body Cidade c);
+    Call<Void> alterar(@Path("id") long id, @Body Cidade c);
 
     @DELETE("cidades/{id}")
     Call<Void> remover(@Path("id") long id);

@@ -19,11 +19,11 @@ public interface MarcaAPIService {
     @GET("marcas")
     Call<List<Marca>> listar();
 
-    @GET("marcas/{id}")
-    Call<Marca> buscar(@Path("id") long idMarca);
+//    @GET("marcas/{id}")
+//    Call<Marca> buscar(@Path("id") long idMarca);
 
     @PUT("marcas/{id}")
-    Call<Marca> alterar(@Path("id") long id, @Body Marca m);
+    Call<Void> alterar(@Path("id") long id, @Body Marca m);
 
     @DELETE("marcas/{id}")
     Call<Void> remover(@Path("id") long id);

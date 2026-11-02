@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,7 +20,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.atividade_2.api.CidadeAPIService;
 import com.example.atividade_2.model.Cidade;
-import com.example.atividade_2.model.Marca;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +30,16 @@ import retrofit2.Response;
 
 public class CidadesActivity extends AppCompatActivity {
 
-    CidadeAPIService service;
+    CidadeAPIService serviceCidade;
     ArrayList<Cidade> cidades;
-    ArrayAdapter<Cidade> adapter;
+    ArrayAdapter<Cidade> adapterCidade;
     ListView lista;
     EditText edNomeCidade;
     EditText edDddCidade;
+    Spinner spinnerCidade;
+    ArrayList<Cidade> cidadesSpinner;
+    ArrayAdapter<Cidade> adapterSpinner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +53,38 @@ public class CidadesActivity extends AppCompatActivity {
         });
         edNomeCidade = findViewById(R.id.edNomeCidade);
         edDddCidade = findViewById(R.id.edDddCidade);
+        spinnerCidade = findViewById(R.id.spinnerCidade);
+        lista = findViewById(R.id.lista_cidades);
 
         cidades = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice,
+        adapterCidade = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
                 cidades);
-        lista.setAdapter( adapter );
-        lista.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        lista.setAdapter( adapterCidade );
 
         registerForContextMenu(lista);
 
-        service = RetrofitClient.getClient().create(CidadeAPIService.class);
+        serviceCidade = RetrofitClient.getClient().create(CidadeAPIService.class);
 
-        buscarCidades();
+        cidadesSpinner = new ArrayList<>();
+        adapterSpinner = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, cidadesSpinner);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCidade.setAdapter(adapterSpinner);
+
+        spinnerCidade.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                buscarCidades(filtroAtual());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                buscarCidades(null);
+            }
+        });
+
+        carregarCidadesParaSpinner();
 
         findViewById(R.id.btnSalvarCidade).setOnClickListener(
                 (v) -> {salvar();}
@@ -79,14 +101,16 @@ public class CidadesActivity extends AppCompatActivity {
             c.setDdd(ddd);
             edNomeCidade.setText("");
             edDddCidade.setText("");
-            Call<Cidade> req = service.inserir( c );
+            Call<Cidade> req = serviceCidade.inserir( c );
             req.enqueue(new Callback<Cidade>() {
                 @Override
                 public void onResponse(Call<Cidade> call, Response<Cidade> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         Cidade cidadeCriadaServidor = response.body();
-                        adapter.add(cidadeCriadaServidor);
-                        adapter.notifyDataSetChanged();
+                        adapterCidade.add(cidadeCriadaServidor);
+                        adapterCidade.notifyDataSetChanged();
+                        carregarCidadesParaSpinner();
+                        buscarCidades(filtroAtual());
                         Toast.makeText(CidadesActivity.this, "Cidade salva com sucesso!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -103,17 +127,17 @@ public class CidadesActivity extends AppCompatActivity {
         }
     }
 
-    void buscarCidades(){
-        Call<List<Cidade>> busca = service.listar();
+    void buscarCidades(String nomeCidade){
+        Call<List<Cidade>> busca = serviceCidade.listar(nomeCidade);
         busca.enqueue(new Callback<List<Cidade>>() {
             @Override
             public void onResponse(Call<List<Cidade>> call,
                                    Response<List<Cidade>> response) {
                 if (response.isSuccessful()) {
                     List<Cidade> ret = response.body();
-                    adapter.clear();
-                    adapter.addAll( ret );
-                    adapter.notifyDataSetChanged();
+                    adapterCidade.clear();
+                    adapterCidade.addAll( ret );
+                    adapterCidade.notifyDataSetChanged();
                 }
             }
 
@@ -142,13 +166,15 @@ public class CidadesActivity extends AppCompatActivity {
                 cidadeAtualizada.setId(cidade.getId());
                 cidadeAtualizada.setNome(novoNome);
 
-                Call<Cidade> req = service.alterar(cidade.getId(), cidadeAtualizada);
-                req.enqueue(new Callback<Cidade>() {
+                Call<Void> req = serviceCidade.alterar(cidade.getId(), cidadeAtualizada);
+                req.enqueue(new Callback<Void>() {
                     @Override
-                    public void onResponse(Call<Cidade> call, Response<Cidade> response) {
+                    public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
                             cidade.setNome(novoNome);
-                            adapter.notifyDataSetChanged();
+                            adapterCidade.notifyDataSetChanged();
+                            carregarCidadesParaSpinner();
+                            buscarCidades(filtroAtual());
                             Toast.makeText(CidadesActivity.this, "Editado com sucesso", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(CidadesActivity.this, "Erro ao atualizar no servidor", Toast.LENGTH_SHORT).show();
@@ -156,7 +182,7 @@ public class CidadesActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<Cidade> call, Throwable throwable) {
+                    public void onFailure(Call<Void> call, Throwable throwable) {
                         Toast.makeText(CidadesActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -172,13 +198,15 @@ public class CidadesActivity extends AppCompatActivity {
         builder.setTitle("Tem certeza que deseja remover?");
 
         builder.setPositiveButton("Sim", (dialog, which) -> {
-            Call<Void> req = service.remover(cidade.getId());
+            Call<Void> req = serviceCidade.remover(cidade.getId());
             req.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        adapter.remove(cidade);
-                        adapter.notifyDataSetChanged();
+                        adapterCidade.remove(cidade);
+                        adapterCidade.notifyDataSetChanged();
+                        carregarCidadesParaSpinner();
+                        buscarCidades(filtroAtual());
                         Toast.makeText(CidadesActivity.this, "Removido com sucesso", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(CidadesActivity.this, "Erro: Não é possível remover itens com dependência", Toast.LENGTH_LONG).show();
@@ -196,6 +224,44 @@ public class CidadesActivity extends AppCompatActivity {
         builder.show();
     }
 
+    String filtroAtual() {
+        int pos = spinnerCidade.getSelectedItemPosition();
+        if (pos <= 0 || pos >= cidadesSpinner.size()) return null;
+        return cidadesSpinner.get(pos).getNome();
+    }
+    void carregarCidadesParaSpinner() {
+        serviceCidade.listar(null).enqueue(new Callback<List<Cidade>>() {
+            @Override
+            public void onResponse(Call<List<Cidade>> call, Response<List<Cidade>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String nomeSelecionado = filtroAtual();
+
+                    Cidade todas = new Cidade();
+                    todas.setNome("Todas as cidades");
+
+                    cidadesSpinner.clear();
+                    cidadesSpinner.add(todas);
+                    cidadesSpinner.addAll(response.body());
+                    adapterSpinner.notifyDataSetChanged();
+
+                    int novaPos = 0;
+                    for (int i = 1; i < cidadesSpinner.size(); i++) {
+                        if (cidadesSpinner.get(i).getNome().equals(nomeSelecionado)) {
+                            novaPos = i;
+                            break;
+                        }
+                    }
+                    spinnerCidade.setSelection(novaPos);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Cidade>> call, Throwable t) {
+                Toast.makeText(CidadesActivity.this, "Erro ao carregar cidades",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {

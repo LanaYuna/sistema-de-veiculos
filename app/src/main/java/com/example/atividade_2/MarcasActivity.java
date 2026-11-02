@@ -32,7 +32,7 @@ import retrofit2.Retrofit;
 
 public class MarcasActivity extends AppCompatActivity {
 
-    MarcaAPIService service;
+    MarcaAPIService serviceMarca;
     ArrayList<Marca> marcas;
     ArrayAdapter<Marca> adapterMarca;
     ListView lista;
@@ -60,7 +60,7 @@ public class MarcasActivity extends AppCompatActivity {
 
         registerForContextMenu(lista);
 
-        service = RetrofitClient.getClient().create(MarcaAPIService.class);
+        serviceMarca = RetrofitClient.getClient().create(MarcaAPIService.class);
 
         buscarMarcas();
 
@@ -76,7 +76,7 @@ public class MarcasActivity extends AppCompatActivity {
             Marca m = new Marca();
             m.setNome(nomeMarca);
             edMarca.setText("");
-            Call<Marca> req = service.inserir( m );
+            Call<Marca> req = serviceMarca.inserir( m );
             req.enqueue(new Callback<Marca>() {
                 @Override
                 public void onResponse(Call<Marca> call, Response<Marca> response) {
@@ -100,7 +100,7 @@ public class MarcasActivity extends AppCompatActivity {
         }
     }
     void buscarMarcas() {
-        Call<List<Marca>> busca = service.listar();
+        Call<List<Marca>> busca = serviceMarca.listar();
         busca.enqueue(new Callback<List<Marca>>() {
             @Override
             public void onResponse(Call<List<Marca>> call,
@@ -138,10 +138,10 @@ public class MarcasActivity extends AppCompatActivity {
                 marcaAtualizada.setId(marca.getId());
                 marcaAtualizada.setNome(novoNome);
 
-                Call<Marca> req = service.alterar(marca.getId(), marcaAtualizada);
-                req.enqueue(new Callback<Marca>() {
+                Call<Void> req = serviceMarca.alterar(marca.getId(), marcaAtualizada);
+                req.enqueue(new Callback<Void>() {
                     @Override
-                    public void onResponse(Call<Marca> call, Response<Marca> response) {
+                    public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
                             marca.setNome(novoNome);
                             adapterMarca.notifyDataSetChanged();
@@ -152,7 +152,7 @@ public class MarcasActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<Marca> call, Throwable throwable) {
+                    public void onFailure(Call<Void> call, Throwable throwable) {
                         Toast.makeText(MarcasActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -168,7 +168,7 @@ public class MarcasActivity extends AppCompatActivity {
         builder.setTitle("Tem certeza que deseja remover?");
 
         builder.setPositiveButton("Sim", (dialog, which) -> {
-            Call<Void> req = service.remover(marca.getId());
+            Call<Void> req = serviceMarca.remover(marca.getId());
             req.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {

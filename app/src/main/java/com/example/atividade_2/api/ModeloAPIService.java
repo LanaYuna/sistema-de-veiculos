@@ -19,9 +19,8 @@ public interface ModeloAPIService {
     Call<List<Modelo>> listar(@Query("marca") Long idMarca);
     @POST("modelos")
     Call<Modelo> inserir(@Body Modelo m);
-
     @PUT("modelos/{id}")
-    Call<Modelo> alterar(@Path("id") long id, @Body Modelo m);
+    Call<Void> alterar(@Path("id") long id, @Body Modelo m);
 
     @DELETE("modelos/{id}")
     Call<Void> remover(@Path("id") long id);

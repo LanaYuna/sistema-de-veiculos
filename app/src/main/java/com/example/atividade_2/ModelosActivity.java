@@ -35,16 +35,12 @@ public class ModelosActivity extends AppCompatActivity {
 
     ModeloAPIService serviceModelo;
     MarcaAPIService serviceMarca;
-
     ArrayList<Modelo> modelos;
     ArrayAdapter<Modelo> adapterModelo;
     ListView lista;
-
     EditText edNomeModelo;
     Spinner spinnerMarca;
     Spinner spinnerTipo;
-
-    List<Marca> listaMarcasDoServidor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +54,6 @@ public class ModelosActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Inicializando views do layout activity_modelos.xml
         edNomeModelo = findViewById(R.id.edNomeModelo);
         spinnerMarca = findViewById(R.id.spinnerMarca);
         spinnerTipo = findViewById(R.id.spinnerTipo);
@@ -72,14 +67,11 @@ public class ModelosActivity extends AppCompatActivity {
 
         registerForContextMenu(lista);
 
-        // Instancia os serviços do Retrofit
         serviceModelo = RetrofitClient.getClient().create(ModeloAPIService.class);
         serviceMarca = RetrofitClient.getClient().create(MarcaAPIService.class);
 
-        // Configura o Spinner de Tipos permitidos exigidos pela API
         configurarSpinnerTipos();
 
-        // Carrega as marcas para preencher o Spinner de marcas e depois busca os modelos
         carregarMarcasParaSpinner();
 
         findViewById(R.id.btSalvarModelo).setOnClickListener(v -> confirmar());
@@ -128,7 +120,6 @@ public class ModelosActivity extends AppCompatActivity {
         });
     }
 
-
     void confirmar() {
         String nomeModelo = edNomeModelo.getText().toString().trim();
 
@@ -148,8 +139,7 @@ public class ModelosActivity extends AppCompatActivity {
         Modelo m = new Modelo();
         m.setNome(nomeModelo);
         m.setTipo(tipoSelecionado);
-        m.setIdMarca(marcaSelecionada.getId()); // Envia o ID da marca relacionada conforme enunciado!
-
+        m.setIdMarca(marcaSelecionada.getId());
         edNomeModelo.setText("");
 
         Call<Modelo> req = serviceModelo.inserir(m);
@@ -205,10 +195,10 @@ public class ModelosActivity extends AppCompatActivity {
             if (!novoNome.isEmpty()) {
                 modelo.setNome(novoNome);
 
-                Call<Modelo> req = serviceModelo.alterar(modelo.getId(), modelo);
-                req.enqueue(new Callback<Modelo>() {
+                Call<Void> req = serviceModelo.alterar(modelo.getId(), modelo);
+                req.enqueue(new Callback<Void>() {
                     @Override
-                    public void onResponse(Call<Modelo> call, Response<Modelo> response) {
+                    public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
                             adapterModelo.notifyDataSetChanged();
                             Toast.makeText(ModelosActivity.this, "Editado com sucesso", Toast.LENGTH_SHORT).show();
@@ -218,7 +208,7 @@ public class ModelosActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<Modelo> call, Throwable t) {
+                    public void onFailure(Call<Void> call, Throwable t) {
                         Toast.makeText(ModelosActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
                     }
                 });
