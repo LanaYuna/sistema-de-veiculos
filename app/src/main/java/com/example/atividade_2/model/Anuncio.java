@@ -92,4 +92,9 @@ public class Anuncio {
         this.idModel = idModel;
     }
 
+    @Override
+    public String toString(){
+        return this.descricao;
+    }
+
 }

@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.atividade_2.api.CidadeAPIService;
+import com.example.atividade_2.model.Anuncio;
 import com.example.atividade_2.model.Cidade;
 
 import java.util.ArrayList;
@@ -155,16 +158,33 @@ public class CidadesActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Editar cidade");
 
-        final EditText input = new EditText(this);
-        input.setText(cidade.getNome());
-        builder.setView(input);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        layout.setPadding(pad, pad, pad, 0);
+
+        final EditText inputNome = new EditText(this);
+        inputNome.setHint("Nome da cidade");
+        inputNome.setText(cidade.getNome());
+        layout.addView(inputNome);
+
+        final EditText inputDdd = new EditText(this);
+        inputDdd.setHint("Ddd da cidade");
+        inputDdd.setText(cidade.getDdd());
+        layout.addView(inputDdd);
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(layout);
+        builder.setView(scroll);
 
         builder.setPositiveButton("Salvar", (dialog, which) -> {
-            String novoNome = input.getText().toString().trim();
+            String novoNome = inputNome.getText().toString().trim();
+            String novoDdd = inputDdd.getText().toString().trim();
             if (!novoNome.isEmpty()) {
                 Cidade cidadeAtualizada = new Cidade();
                 cidadeAtualizada.setId(cidade.getId());
                 cidadeAtualizada.setNome(novoNome);
+                cidadeAtualizada.setDdd(novoDdd);
 
                 Call<Void> req = serviceCidade.alterar(cidade.getId(), cidadeAtualizada);
                 req.enqueue(new Callback<Void>() {

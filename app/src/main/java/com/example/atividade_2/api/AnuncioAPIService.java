@@ -15,19 +15,19 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AnuncioAPIService {
-    @POST("cidades")
+    @POST("anuncios")
     Call<Anuncio> inserir(@Body Anuncio a);
 
-    @GET("cidades")
+    @GET("anuncios")
     Call<List<Anuncio>> listar(@Query("modelo") Long idModelo,
                                @Query("tipo") String tipo,
                                @Query("ano_inicial") Integer anoInicial,
                                @Query("ano_final") Integer anoFinal,
                                @Query("min") Double min,
                                @Query("max") Double max);
-    @PUT("cidades/{id}")
+    @PUT("anuncios/{id}")
     Call<Void> alterar(@Path("id") long id, @Body Anuncio a);
 
-    @DELETE("cidades/{id}")
+    @DELETE("anuncios/{id}")
     Call<Void> remover(@Path("id") long id);
 }
