@@ -254,23 +254,6 @@ public class AnunciosActivity extends AppCompatActivity {
         Modelo modeloSelecionado = (Modelo) spinnerModelo.getSelectedItem();
         Cidade cidadeSelecionada = (Cidade) spinnerCidade.getSelectedItem();
 
-//        if (modeloSelecionado == null) {
-//            Toast.makeText(this, "Selecione um modelo", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        if (cidadeSelecionada == null) {
-//            Toast.makeText(this, "Selecione uma cidade", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        if (descricao.isEmpty() || cor.isEmpty()) {
-//            Toast.makeText(this, "Preencha descrição e cor", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        if (valorTxt.isEmpty() || anoTxt.isEmpty() || kmTxt.isEmpty()) {
-//            Toast.makeText(this, "Preencha valor, ano e km", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-
         if(modeloSelecionado != null && cidadeSelecionada != null && !descricao.isBlank() &&
             !cor.isBlank() && !valorTxt.isBlank() && !anoTxt.isBlank() && !kmTxt.isBlank()){
 
@@ -280,8 +263,8 @@ public class AnunciosActivity extends AppCompatActivity {
             a.setKm(Integer.parseInt(kmTxt));
             a.setDescricao(descricao);
             a.setCor(cor);
-            a.setModelo(modeloSelecionado);
-            a.setCidade(cidadeSelecionada);
+            a.setIdModelo(modeloSelecionado.getId());
+            a.setIdCidade(cidadeSelecionada.getId());
             edDescricao.setText("");
             edCor.setText("");
             edValor.setText("");
@@ -329,7 +312,7 @@ public class AnunciosActivity extends AppCompatActivity {
         layout.addView(lblModelo);
 
         final Spinner spinnerEditModelo = new Spinner(this);
-        spinnerEditModelo.setAdapter(spinnerModelo.getAdapter()); // mesma lista já carregada
+        spinnerEditModelo.setAdapter(spinnerModelo.getAdapter());
         if (anuncio.getModelo() != null) {
             for (int i = 0; i < spinnerEditModelo.getCount(); i++) {
                 Modelo m = (Modelo) spinnerEditModelo.getItemAtPosition(i);
@@ -427,8 +410,8 @@ public class AnunciosActivity extends AppCompatActivity {
                 atualizado.setValor(novoValor);
                 atualizado.setAno(novoAno);
                 atualizado.setKm(novoKm);
-                atualizado.setModelo(modeloFinal);
-                atualizado.setCidade(cidadeFinal);
+                atualizado.setIdModelo(modeloFinal.getId());
+                atualizado.setIdCidade(cidadeFinal.getId());
 
                 serviceAnuncio.alterar(anuncio.getId(), atualizado).enqueue(new Callback<Void>() {
                     @Override

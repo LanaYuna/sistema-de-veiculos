@@ -10,7 +10,7 @@ public class Anuncio {
     private Integer ano;
     private Integer km;
     private Long idCidade;
-    private Long idModel;
+    private Long idModelo;
 
     public Long getId() {
         return id;
@@ -84,12 +84,12 @@ public class Anuncio {
         this.idCidade = idCidade;
     }
 
-    public Long getIdModel() {
-        return idModel;
+    public Long getIdModelo() {
+        return idModelo;
     }
 
-    public void setIdModel(Long idModel) {
-        this.idModel = idModel;
+    public void setIdModelo(Long idModel) {
+        this.idModelo = idModel;
     }
 
     @Override
