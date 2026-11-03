@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +28,7 @@ import com.example.atividade_2.model.Modelo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -71,7 +74,6 @@ public class ModelosActivity extends AppCompatActivity {
         serviceMarca = RetrofitClient.getClient().create(MarcaAPIService.class);
 
         configurarSpinnerTipos();
-
         carregarMarcasParaSpinner();
 
         findViewById(R.id.btSalvarModelo).setOnClickListener(v -> confirmar());
@@ -115,7 +117,7 @@ public class ModelosActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Marca>> call, Throwable t) {
-                Toast.makeText(ModelosActivity.this, "Erro ao carregar marcas", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ModelosActivity.this, R.string.erroCarregarMarcas, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -124,12 +126,12 @@ public class ModelosActivity extends AppCompatActivity {
         String nomeModelo = edNomeModelo.getText().toString().trim();
 
         if (nomeModelo.isEmpty()) {
-            Toast.makeText(this, "Digite o nome do modelo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.digiteNomeModelo), Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (spinnerMarca.getSelectedItem() == null) {
-            Toast.makeText(this, "Selecione uma marca válida", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.selecioneMarcaValida), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -150,15 +152,15 @@ public class ModelosActivity extends AppCompatActivity {
                     Modelo modeloCriado = response.body();
                     adapterModelo.add(modeloCriado);
                     adapterModelo.notifyDataSetChanged();
-                    Toast.makeText(ModelosActivity.this, "Modelo salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModelosActivity.this, getString(R.string.modeloSalvoSucesso), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ModelosActivity.this, "Erro ao salvar modelo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModelosActivity.this, getString(R.string.erroSalvarModelo), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Modelo> call, Throwable throwable) {
-                Toast.makeText(ModelosActivity.this, "Erro de rede: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ModelosActivity.this, getString(R.string.erroRede) + ": " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -177,53 +179,119 @@ public class ModelosActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Modelo>> call, Throwable throwable) {
-                Toast.makeText(ModelosActivity.this, "Erro ao buscar modelos: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ModelosActivity.this, getString(R.string.erroBuscarModelos) + ": " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     void alterar(Modelo modelo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Editar nome do Modelo");
+        builder.setTitle(R.string.editarModelo);
 
-        final EditText input = new EditText(this);
-        input.setText(modelo.getNome());
-        builder.setView(input);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        layout.setPadding(pad, pad, pad, 0);
 
-        builder.setPositiveButton("Salvar", (dialog, which) -> {
-            String novoNome = input.getText().toString().trim();
-            if (!novoNome.isEmpty()) {
-                modelo.setNome(novoNome);
+        final EditText inputNome = new EditText(this);
+        inputNome.setHint(R.string.nomeModelo);
+        inputNome.setText(modelo.getNome());
+        layout.addView(inputNome);
 
-                Call<Void> req = serviceModelo.alterar(modelo.getId(), modelo);
-                req.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            adapterModelo.notifyDataSetChanged();
-                            Toast.makeText(ModelosActivity.this, "Editado com sucesso", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(ModelosActivity.this, "Erro ao atualizar no servidor", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+        TextView lblTipo = new TextView(this);
+        lblTipo.setText(R.string.tipoVeiculoLabel);
+        layout.addView(lblTipo);
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(ModelosActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        final Spinner spinnerEditTipo = new Spinner(this);
+        String[] tipos = {"SEDAN", "HATCH", "SUV", "CAMIONETE"};
+        ArrayAdapter<String> adapterTipo = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, tipos);
+        spinnerEditTipo.setAdapter(adapterTipo);
+
+        if (modelo.getTipo() != null) {
+            for (int i = 0; i < spinnerEditTipo.getCount(); i++) {
+                String tipoItem = (String) spinnerEditTipo.getItemAtPosition(i);
+                if (tipoItem.equalsIgnoreCase(modelo.getTipo())) {
+                    spinnerEditTipo.setSelection(i);
+                    break;
+                }
             }
+        }
+        layout.addView(spinnerEditTipo);
+
+        TextView lblMarca = new TextView(this);
+        lblMarca.setText(R.string.marcaLabel);
+        layout.addView(lblMarca);
+
+        final Spinner spinnerEditMarca = new Spinner(this);
+        spinnerEditMarca.setAdapter(spinnerMarca.getAdapter());
+
+        if (modelo.getIdMarca() != null) {
+            for (int i = 0; i < spinnerEditMarca.getCount(); i++) {
+                Marca m = (Marca) spinnerEditMarca.getItemAtPosition(i);
+                if (Objects.equals(m.getId(), modelo.getIdMarca())) {
+                    spinnerEditMarca.setSelection(i);
+                    break;
+                }
+            }
+        }
+        layout.addView(spinnerEditMarca);
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(layout);
+        builder.setView(scroll);
+
+        builder.setPositiveButton(R.string.salvar, (dialog, which) -> {
+            String novoNome = inputNome.getText().toString().trim();
+            String novoTipo = spinnerEditTipo.getSelectedItem() != null ? spinnerEditTipo.getSelectedItem().toString() : modelo.getTipo();
+            Marca marcaSelecionada = (Marca) spinnerEditMarca.getSelectedItem();
+
+            if (novoNome.isEmpty()) {
+                Toast.makeText(this, getString(R.string.preenchaNomeModelo), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (marcaSelecionada == null) {
+                Toast.makeText(this, getString(R.string.selecioneMarca), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Modelo modeloAtualizado = new Modelo();
+            modeloAtualizado.setId(modelo.getId());
+            modeloAtualizado.setNome(novoNome);
+            modeloAtualizado.setTipo(novoTipo);
+            modeloAtualizado.setIdMarca(marcaSelecionada.getId());
+
+            Call<Void> req = serviceModelo.alterar(modelo.getId(), modeloAtualizado);
+            req.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        modelo.setNome(novoNome);
+                        modelo.setTipo(novoTipo);
+                        modelo.setIdMarca(marcaSelecionada.getId());
+                        adapterModelo.notifyDataSetChanged();
+                        Toast.makeText(ModelosActivity.this, getString(R.string.editadoSucesso), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ModelosActivity.this, getString(R.string.erroAtualizarServidor), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(ModelosActivity.this, R.string.erroRede, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.cancelar, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
     void remover(Modelo modelo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Tem certeza que deseja remover?");
+        builder.setTitle(R.string.certezaRemocao);
 
-        builder.setPositiveButton("Sim", (dialog, which) -> {
+        builder.setPositiveButton(R.string.sim, (dialog, which) -> {
             Call<Void> req = serviceModelo.remover(modelo.getId());
             req.enqueue(new Callback<Void>() {
                 @Override
@@ -231,29 +299,29 @@ public class ModelosActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         adapterModelo.remove(modelo);
                         adapterModelo.notifyDataSetChanged();
-                        Toast.makeText(ModelosActivity.this, "Removido com sucesso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ModelosActivity.this, getString(R.string.remocaoSucesso), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(ModelosActivity.this, "Erro: Não é possível remover itens com dependência", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ModelosActivity.this, getString(R.string.dependencia), Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(ModelosActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModelosActivity.this, R.string.erroRede, Toast.LENGTH_SHORT).show();
                 }
             });
         });
 
-        builder.setNegativeButton("Não", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.nao, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Opções de Modelo");
-        menu.add(0, 1, 0, "Editar modelo");
-        menu.add(0, 2, 1, "Remover modelo");
+        menu.setHeaderTitle(R.string.opcoesModelo);
+        menu.add(0, 1, 0, R.string.editarModeloMenu);
+        menu.add(0, 2, 1, R.string.removerModeloMenu);
     }
 
     @Override

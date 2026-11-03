@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -84,19 +85,19 @@ public class MarcasActivity extends AppCompatActivity {
                         Marca marcaCriadaServidor = response.body();
                         adapterMarca.add(marcaCriadaServidor);
                         adapterMarca.notifyDataSetChanged();
-                        Toast.makeText(MarcasActivity.this, "Marca salva com sucesso!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MarcasActivity.this, R.string.marcaSalva, Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
                 public void onFailure(Call<Marca> call, Throwable throwable) {
                     throwable.printStackTrace();
                     Toast.makeText(MarcasActivity.this,
-                            "Erro: "+throwable.getMessage(),
+                            R.string.erro +throwable.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(this, "Digite o nome da marca", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.digiteNomeMarca, Toast.LENGTH_SHORT).show();
         }
     }
     void buscarMarcas() {
@@ -117,7 +118,7 @@ public class MarcasActivity extends AppCompatActivity {
             public void onFailure(Call<List<Marca>> call, Throwable throwable) {
                 throwable.printStackTrace();
                 Toast.makeText(MarcasActivity.this,
-                        "Erro: "+throwable.getMessage(),
+                        R.string.erro +throwable.getMessage(),
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -125,13 +126,13 @@ public class MarcasActivity extends AppCompatActivity {
 
     void alterar(Marca marca){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Editar marca");
+        builder.setTitle(R.string.editarMarca);
 
         final EditText input = new EditText(this);
         input.setText(marca.getNome());
         builder.setView(input);
 
-        builder.setPositiveButton("Salvar", (dialog, which) -> {
+        builder.setPositiveButton(R.string.salvar, (dialog, which) -> {
             String novoNome = input.getText().toString().trim();
             if (!novoNome.isEmpty()) {
                 Marca marcaAtualizada = new Marca();
@@ -145,29 +146,29 @@ public class MarcasActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             marca.setNome(novoNome);
                             adapterMarca.notifyDataSetChanged();
-                            Toast.makeText(MarcasActivity.this, "Editado com sucesso", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MarcasActivity.this, R.string.editadoSucesso, Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(MarcasActivity.this, "Erro ao atualizar no servidor", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MarcasActivity.this, R.string.erroServidor, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable throwable) {
-                        Toast.makeText(MarcasActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MarcasActivity.this, R.string.erroRede, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
 
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.cancelar, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
     void remover(Marca marca) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Tem certeza que deseja remover?");
+        builder.setTitle(R.string.certezaRemocao);
 
-        builder.setPositiveButton("Sim", (dialog, which) -> {
+        builder.setPositiveButton(R.string.sim, (dialog, which) -> {
             Call<Void> req = serviceMarca.remover(marca.getId());
             req.enqueue(new Callback<Void>() {
                 @Override
@@ -175,29 +176,29 @@ public class MarcasActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         adapterMarca.remove(marca);
                         adapterMarca.notifyDataSetChanged();
-                        Toast.makeText(MarcasActivity.this, "Removido com sucesso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MarcasActivity.this, R.string.remocaoSucesso, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(MarcasActivity.this, "Erro: Não é possível remover itens com dependência", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MarcasActivity.this, R.string.dependencia, Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable throwable) {
-                    Toast.makeText(MarcasActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MarcasActivity.this, R.string.erroRede, Toast.LENGTH_SHORT).show();
                 }
             });
         });
 
-        builder.setNegativeButton("Não", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.nao, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Opções de marca");
-        menu.add(0, 1, 0, "Editar marca");
-        menu.add(0, 2, 1, "Remover marca");
+        menu.setHeaderTitle(R.string.opcoes);
+        menu.add(0, 1, 0, R.string.editarMarca);
+        menu.add(0, 2, 1, R.string.removerMarca);
     }
 
     @Override

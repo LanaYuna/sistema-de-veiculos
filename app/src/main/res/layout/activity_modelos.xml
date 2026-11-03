@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gerenciamento de Modelos"
+        android:text="@string/gerenciamentoModelos"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="12dp"/>
@@ -18,14 +18,14 @@
         android:id="@+id/edNomeModelo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nome do Modelo"
+        android:hint="@string/nome"
         android:inputType="text"
         android:layout_marginBottom="8dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Selecione a Marca:"
+        android:text="@string/selecioneMarca"
         android:textSize="14sp"
         android:layout_marginBottom="4dp"/>
 
@@ -38,7 +38,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tipo do Veículo (SEDAN, HATCH, SUV, CAMIONETE):"
+        android:text="@string/tipoVeiculo"
         android:textSize="14sp"
         android:layout_marginBottom="4dp"/>
 
@@ -52,7 +52,7 @@
         android:id="@+id/btSalvarModelo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Salvar"
+        android:text="@string/salvar"
         android:layout_marginEnd="8dp"/>
 
     <ListView

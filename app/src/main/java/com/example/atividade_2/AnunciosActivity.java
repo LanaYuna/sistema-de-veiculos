@@ -52,7 +52,7 @@ public class AnunciosActivity extends AppCompatActivity {
 
     Spinner spinnerFiltroModelo, spinnerFiltroAnoInicial, spinnerFiltroAnoFinal,
             spinnerFiltroMin, spinnerFiltroMax;
-    ArrayList<Object> itensFiltroModelo; // "Qualquer" + modelos
+    ArrayList<Object> itensFiltroModelo;
     ArrayAdapter<Object> adapterFiltroModelo;
 
     ListView lista;
@@ -83,7 +83,7 @@ public class AnunciosActivity extends AppCompatActivity {
         spinnerFiltroAnoFinal = findViewById(R.id.spinnerFiltroAnoFinal);
         spinnerFiltroMin = findViewById(R.id.spinnerFiltroMin);
         spinnerFiltroMax = findViewById(R.id.spinnerFiltroMax);
-        lista = findViewById(R.id.lista_anuncios); // estava faltando
+        lista = findViewById(R.id.lista_anuncios);
 
         anuncios = new ArrayList<>();
         adapterAnuncio = new ArrayAdapter<>(this,
@@ -102,25 +102,23 @@ public class AnunciosActivity extends AppCompatActivity {
         findViewById(R.id.btSalvarAnuncio).setOnClickListener(v -> confirmar());
     }
 
-
     void configurarFiltros() {
         itensFiltroModelo = new ArrayList<>();
-        itensFiltroModelo.add("Qualquer");
+        itensFiltroModelo.add(getString(R.string.qualquer));
         adapterFiltroModelo = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, itensFiltroModelo);
         adapterFiltroModelo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerFiltroModelo.setAdapter(adapterFiltroModelo);
 
-        // Anos: posição 0 = "Qualquer", depois ANO_MIN..ano atual
         int anoAtual = Calendar.getInstance().get(Calendar.YEAR);
         List<String> anos = new ArrayList<>();
-        anos.add("Qualquer");
+        anos.add(getString(R.string.qualquer));
         for (int a = ANO_MIN; a <= anoAtual; a++) anos.add(String.valueOf(a));
         spinnerFiltroAnoInicial.setAdapter(criarAdapter(anos));
         spinnerFiltroAnoFinal.setAdapter(criarAdapter(anos));
 
         List<String> valores = new ArrayList<>();
-        valores.add("Qualquer");
+        valores.add(getString(R.string.qualquer));
         for (int i = 1; i <= QTD_VALORES; i++) {
             valores.add("R$ " + String.format("%,d", i * PASSO_VALOR));
         }
@@ -170,11 +168,11 @@ public class AnunciosActivity extends AppCompatActivity {
         Double max = posMax > 0 ? (double) posMax * PASSO_VALOR : null;
 
         if (min != null && max != null && min > max) {
-            Toast.makeText(this, "O valor mínimo é maior que o máximo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.erroValorMinMaiorMax), Toast.LENGTH_SHORT).show();
             return;
         }
         if (anoInicial != null && anoFinal != null && anoInicial > anoFinal) {
-            Toast.makeText(this, "O ano inicial é maior que o final", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.erroAnoIniMaiorFim), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -193,7 +191,7 @@ public class AnunciosActivity extends AppCompatActivity {
                     public void onFailure(Call<List<Anuncio>> call, Throwable throwable) {
                         throwable.printStackTrace();
                         Toast.makeText(AnunciosActivity.this,
-                                "Erro: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                getString(R.string.erro) + " " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -212,7 +210,7 @@ public class AnunciosActivity extends AppCompatActivity {
                     spinnerModelo.setAdapter(adapterSpinnerModelo);
 
                     itensFiltroModelo.clear();
-                    itensFiltroModelo.add("Qualquer");
+                    itensFiltroModelo.add(getString(R.string.qualquer));
                     itensFiltroModelo.addAll(listaModelos);
                     adapterFiltroModelo.notifyDataSetChanged();
                 }
@@ -220,7 +218,7 @@ public class AnunciosActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Modelo>> call, Throwable throwable) {
-                Toast.makeText(AnunciosActivity.this, "Erro ao carregar modelos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AnunciosActivity.this, getString(R.string.erroCarregarModelos), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -240,10 +238,11 @@ public class AnunciosActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Cidade>> call, Throwable throwable) {
-                Toast.makeText(AnunciosActivity.this, "Erro ao carregar cidades", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AnunciosActivity.this, getString(R.string.erroCarregarCidades), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     void confirmar() {
         String descricao = edDescricao.getText().toString().trim();
         String cor = edCor.getText().toString().trim();
@@ -254,8 +253,8 @@ public class AnunciosActivity extends AppCompatActivity {
         Modelo modeloSelecionado = (Modelo) spinnerModelo.getSelectedItem();
         Cidade cidadeSelecionada = (Cidade) spinnerCidade.getSelectedItem();
 
-        if(modeloSelecionado != null && cidadeSelecionada != null && !descricao.isBlank() &&
-            !cor.isBlank() && !valorTxt.isBlank() && !anoTxt.isBlank() && !kmTxt.isBlank()){
+        if (modeloSelecionado != null && cidadeSelecionada != null && !descricao.isBlank() &&
+                !cor.isBlank() && !valorTxt.isBlank() && !anoTxt.isBlank() && !kmTxt.isBlank()) {
 
             Anuncio a = new Anuncio();
             a.setValor(Double.parseDouble(valorTxt));
@@ -279,10 +278,10 @@ public class AnunciosActivity extends AppCompatActivity {
                         adapterAnuncio.add(anuncioCriadoNoServidor);
                         adapterAnuncio.notifyDataSetChanged();
                         buscarAnuncios();
-                        Toast.makeText(AnunciosActivity.this, "Anúncio salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AnunciosActivity.this, getString(R.string.anuncioSalvo), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(AnunciosActivity.this,
-                                "Erro ao salvar no servidor", Toast.LENGTH_SHORT).show();
+                                getString(R.string.erroServidor), Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -290,17 +289,17 @@ public class AnunciosActivity extends AppCompatActivity {
                 public void onFailure(Call<Anuncio> call, Throwable throwable) {
                     throwable.printStackTrace();
                     Toast.makeText(AnunciosActivity.this,
-                            "Erro de rede: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            getString(R.string.erroRede) + ": " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(this, "Valores inválidos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.valoresInvalidos), Toast.LENGTH_SHORT).show();
         }
     }
 
     void alterar(Anuncio anuncio) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Editar anúncio");
+        builder.setTitle(R.string.editarAnuncio);
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -308,7 +307,7 @@ public class AnunciosActivity extends AppCompatActivity {
         layout.setPadding(pad, pad, pad, 0);
 
         TextView lblModelo = new TextView(this);
-        lblModelo.setText("Modelo:");
+        lblModelo.setText(R.string.modelo);
         layout.addView(lblModelo);
 
         final Spinner spinnerEditModelo = new Spinner(this);
@@ -325,7 +324,7 @@ public class AnunciosActivity extends AppCompatActivity {
         layout.addView(spinnerEditModelo);
 
         TextView lblCidade = new TextView(this);
-        lblCidade.setText("Cidade:");
+        lblCidade.setText(R.string.cidade);
         layout.addView(lblCidade);
 
         final Spinner spinnerEditCidade = new Spinner(this);
@@ -342,30 +341,30 @@ public class AnunciosActivity extends AppCompatActivity {
         layout.addView(spinnerEditCidade);
 
         final EditText inputDescricao = new EditText(this);
-        inputDescricao.setHint("Descrição");
+        inputDescricao.setHint(R.string.descricao);
         inputDescricao.setText(anuncio.getDescricao());
         layout.addView(inputDescricao);
 
         final EditText inputCor = new EditText(this);
-        inputCor.setHint("Cor");
+        inputCor.setHint(R.string.cor);
         inputCor.setText(anuncio.getCor());
         layout.addView(inputCor);
 
         final EditText inputValor = new EditText(this);
-        inputValor.setHint("Valor");
+        inputValor.setHint(R.string.valor);
         inputValor.setInputType(android.text.InputType.TYPE_CLASS_NUMBER
                 | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
         inputValor.setText(String.valueOf(anuncio.getValor()));
         layout.addView(inputValor);
 
         final EditText inputAno = new EditText(this);
-        inputAno.setHint("Ano");
+        inputAno.setHint(R.string.ano);
         inputAno.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
         inputAno.setText(String.valueOf(anuncio.getAno()));
         layout.addView(inputAno);
 
         final EditText inputKm = new EditText(this);
-        inputKm.setHint("Km");
+        inputKm.setHint(R.string.km);
         inputKm.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
         inputKm.setText(String.valueOf(anuncio.getKm()));
         layout.addView(inputKm);
@@ -374,12 +373,12 @@ public class AnunciosActivity extends AppCompatActivity {
         scroll.addView(layout);
         builder.setView(scroll);
 
-        builder.setPositiveButton("Salvar", (dialog, which) -> {
+        builder.setPositiveButton(R.string.salvar, (dialog, which) -> {
             String novaDescricao = inputDescricao.getText().toString().trim();
-            String novaCor       = inputCor.getText().toString().trim();
-            String novoValorTxt  = inputValor.getText().toString().trim();
-            String novoAnoTxt    = inputAno.getText().toString().trim();
-            String novoKmTxt     = inputKm.getText().toString().trim();
+            String novaCor = inputCor.getText().toString().trim();
+            String novoValorTxt = inputValor.getText().toString().trim();
+            String novoAnoTxt = inputAno.getText().toString().trim();
+            String novoKmTxt = inputKm.getText().toString().trim();
 
             Modelo novoModelo = (Modelo) spinnerEditModelo.getSelectedItem();
             if (novoModelo == null) novoModelo = anuncio.getModelo();
@@ -387,18 +386,18 @@ public class AnunciosActivity extends AppCompatActivity {
             if (novaCidade == null) novaCidade = anuncio.getCidade();
 
             if (novaDescricao.isEmpty() || novaCor.isEmpty()) {
-                Toast.makeText(this, "Preencha descrição e cor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.preenchaDescricaoCor), Toast.LENGTH_SHORT).show();
                 return;
             }
             if (novoValorTxt.isEmpty() || novoAnoTxt.isEmpty() || novoKmTxt.isEmpty()) {
-                Toast.makeText(this, "Preencha valor, ano e km", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.preenchaValorAnoKm), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             try {
                 double novoValor = Double.parseDouble(novoValorTxt);
-                int novoAno      = Integer.parseInt(novoAnoTxt);
-                int novoKm       = Integer.parseInt(novoKmTxt);
+                int novoAno = Integer.parseInt(novoAnoTxt);
+                int novoKm = Integer.parseInt(novoKmTxt);
 
                 final Modelo modeloFinal = novoModelo;
                 final Cidade cidadeFinal = novaCidade;
@@ -426,31 +425,32 @@ public class AnunciosActivity extends AppCompatActivity {
                             anuncio.setCidade(cidadeFinal);
                             adapterAnuncio.notifyDataSetChanged();
                             Toast.makeText(AnunciosActivity.this,
-                                    "Editado com sucesso", Toast.LENGTH_SHORT).show();
+                                    getString(R.string.editadoSucesso), Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(AnunciosActivity.this,
-                                    "Erro ao atualizar no servidor", Toast.LENGTH_SHORT).show();
+                                    getString(R.string.erroAtualizarServidor), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable throwable) {
-                        Toast.makeText(AnunciosActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AnunciosActivity.this, getString(R.string.erroRede), Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "Valor, ano ou km inválido", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.valorAnoKmInvalido), Toast.LENGTH_SHORT).show();
             }
         });
 
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.cancelar, (dialog, which) -> dialog.cancel());
         builder.show();
     }
+
     void remover(Anuncio anuncio) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Tem certeza que deseja remover?");
+        builder.setTitle(R.string.certezaRemocao);
 
-        builder.setPositiveButton("Sim", (dialog, which) ->
+        builder.setPositiveButton(R.string.sim, (dialog, which) ->
                 serviceAnuncio.remover(anuncio.getId()).enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -458,29 +458,29 @@ public class AnunciosActivity extends AppCompatActivity {
                             adapterAnuncio.remove(anuncio);
                             adapterAnuncio.notifyDataSetChanged();
                             Toast.makeText(AnunciosActivity.this,
-                                    "Removido com sucesso", Toast.LENGTH_SHORT).show();
+                                    getString(R.string.remocaoSucesso), Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(AnunciosActivity.this,
-                                    "Erro ao remover no servidor", Toast.LENGTH_SHORT).show();
+                                    getString(R.string.erroRemoverServidor), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable throwable) {
-                        Toast.makeText(AnunciosActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AnunciosActivity.this, getString(R.string.erroRede), Toast.LENGTH_SHORT).show();
                     }
                 }));
 
-        builder.setNegativeButton("Não", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.nao, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Opções do anúncio");
-        menu.add(0, 1, 0, "Editar anúncio");
-        menu.add(0, 2, 1, "Remover anúncio");
+        menu.setHeaderTitle(R.string.opcoesAnuncio);
+        menu.add(0, 1, 0, R.string.editarAnuncio);
+        menu.add(0, 2, 1, R.string.removerAnuncio);
     }
 
     @Override

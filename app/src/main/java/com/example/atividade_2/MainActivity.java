@@ -75,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void exibirAlertaSemInternet() {
         new AlertDialog.Builder(this)
-                .setTitle("Sem Conexão com a Internet")
-                .setMessage("Este aplicativo requer conexão com a internet para funcionar e não pode ser usado offline.")
+                .setTitle(R.string.semConexao)
+                .setMessage(R.string.requerimentoConexao)
                 .setCancelable(false)
-                .setPositiveButton("Sair", (dialog, which) -> {
+                .setPositiveButton(R.string.sair, (dialog, which) -> {
                     finish();
                 })
                 .show();

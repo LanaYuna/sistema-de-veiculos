@@ -21,7 +21,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.atividade_2.api.CidadeAPIService;
-import com.example.atividade_2.model.Anuncio;
 import com.example.atividade_2.model.Cidade;
 
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ public class CidadesActivity extends AppCompatActivity {
     ArrayList<Cidade> cidadesSpinner;
     ArrayAdapter<Cidade> adapterSpinner;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +61,7 @@ public class CidadesActivity extends AppCompatActivity {
         adapterCidade = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 cidades);
-        lista.setAdapter( adapterCidade );
+        lista.setAdapter(adapterCidade);
 
         registerForContextMenu(lista);
 
@@ -90,11 +88,11 @@ public class CidadesActivity extends AppCompatActivity {
         carregarCidadesParaSpinner();
 
         findViewById(R.id.btnSalvarCidade).setOnClickListener(
-                (v) -> {salvar();}
+                (v) -> { salvar(); }
         );
     }
 
-    void salvar(){
+    void salvar() {
         String nomeCidade = edNomeCidade.getText().toString();
         String ddd = edDddCidade.getText().toString();
 
@@ -104,7 +102,7 @@ public class CidadesActivity extends AppCompatActivity {
             c.setDdd(ddd);
             edNomeCidade.setText("");
             edDddCidade.setText("");
-            Call<Cidade> req = serviceCidade.inserir( c );
+            Call<Cidade> req = serviceCidade.inserir(c);
             req.enqueue(new Callback<Cidade>() {
                 @Override
                 public void onResponse(Call<Cidade> call, Response<Cidade> response) {
@@ -114,23 +112,23 @@ public class CidadesActivity extends AppCompatActivity {
                         adapterCidade.notifyDataSetChanged();
                         carregarCidadesParaSpinner();
                         buscarCidades(filtroAtual());
-                        Toast.makeText(CidadesActivity.this, "Cidade salva com sucesso!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CidadesActivity.this, getString(R.string.cidadeSalvaSucesso), Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
                 public void onFailure(Call<Cidade> call, Throwable throwable) {
                     throwable.printStackTrace();
                     Toast.makeText(CidadesActivity.this,
-                            "Erro: "+throwable.getMessage(),
+                            getString(R.string.erro) + " " + throwable.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Toast.makeText(this, "Digite o nome da cidade e o seu DDD", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.digiteNomeDddCidade), Toast.LENGTH_SHORT).show();
         }
     }
 
-    void buscarCidades(String nomeCidade){
+    void buscarCidades(String nomeCidade) {
         Call<List<Cidade>> busca = serviceCidade.listar(nomeCidade);
         busca.enqueue(new Callback<List<Cidade>>() {
             @Override
@@ -139,7 +137,7 @@ public class CidadesActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<Cidade> ret = response.body();
                     adapterCidade.clear();
-                    adapterCidade.addAll( ret );
+                    adapterCidade.addAll(ret);
                     adapterCidade.notifyDataSetChanged();
                 }
             }
@@ -148,15 +146,15 @@ public class CidadesActivity extends AppCompatActivity {
             public void onFailure(Call<List<Cidade>> call, Throwable throwable) {
                 throwable.printStackTrace();
                 Toast.makeText(CidadesActivity.this,
-                        "Erro: "+throwable.getMessage(),
+                        getString(R.string.erro) + " " + throwable.getMessage(),
                         Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    void alterar(Cidade cidade){
+    void alterar(Cidade cidade) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Editar cidade");
+        builder.setTitle(R.string.editarCidade);
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -164,12 +162,12 @@ public class CidadesActivity extends AppCompatActivity {
         layout.setPadding(pad, pad, pad, 0);
 
         final EditText inputNome = new EditText(this);
-        inputNome.setHint("Nome da cidade");
+        inputNome.setHint(R.string.nomeCidadeHint);
         inputNome.setText(cidade.getNome());
         layout.addView(inputNome);
 
         final EditText inputDdd = new EditText(this);
-        inputDdd.setHint("Ddd da cidade");
+        inputDdd.setHint(R.string.dddCidadeHint);
         inputDdd.setText(cidade.getDdd());
         layout.addView(inputDdd);
 
@@ -177,7 +175,7 @@ public class CidadesActivity extends AppCompatActivity {
         scroll.addView(layout);
         builder.setView(scroll);
 
-        builder.setPositiveButton("Salvar", (dialog, which) -> {
+        builder.setPositiveButton(R.string.salvar, (dialog, which) -> {
             String novoNome = inputNome.getText().toString().trim();
             String novoDdd = inputDdd.getText().toString().trim();
             if (!novoNome.isEmpty()) {
@@ -195,29 +193,29 @@ public class CidadesActivity extends AppCompatActivity {
                             adapterCidade.notifyDataSetChanged();
                             carregarCidadesParaSpinner();
                             buscarCidades(filtroAtual());
-                            Toast.makeText(CidadesActivity.this, "Editado com sucesso", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CidadesActivity.this, getString(R.string.editadoSucesso), Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(CidadesActivity.this, "Erro ao atualizar no servidor", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CidadesActivity.this, getString(R.string.erroAtualizarServidor), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable throwable) {
-                        Toast.makeText(CidadesActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CidadesActivity.this, getString(R.string.erroRede), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
 
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.cancelar, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
-    void remover(Cidade cidade){
+    void remover(Cidade cidade) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Tem certeza que deseja remover?");
+        builder.setTitle(R.string.certezaRemocao);
 
-        builder.setPositiveButton("Sim", (dialog, which) -> {
+        builder.setPositiveButton(R.string.sim, (dialog, which) -> {
             Call<Void> req = serviceCidade.remover(cidade.getId());
             req.enqueue(new Callback<Void>() {
                 @Override
@@ -227,20 +225,20 @@ public class CidadesActivity extends AppCompatActivity {
                         adapterCidade.notifyDataSetChanged();
                         carregarCidadesParaSpinner();
                         buscarCidades(filtroAtual());
-                        Toast.makeText(CidadesActivity.this, "Removido com sucesso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CidadesActivity.this, getString(R.string.remocaoSucesso), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(CidadesActivity.this, "Erro: Não é possível remover itens com dependência", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CidadesActivity.this, getString(R.string.dependencia), Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Void> call, Throwable throwable) {
-                    Toast.makeText(CidadesActivity.this, "Erro de rede", Toast.LENGTH_SHORT).show();
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(CidadesActivity.this, R.string.erroRede, Toast.LENGTH_SHORT).show();
                 }
             });
         });
 
-        builder.setNegativeButton("Não", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.nao, (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
@@ -249,6 +247,7 @@ public class CidadesActivity extends AppCompatActivity {
         if (pos <= 0 || pos >= cidadesSpinner.size()) return null;
         return cidadesSpinner.get(pos).getNome();
     }
+
     void carregarCidadesParaSpinner() {
         serviceCidade.listar(null).enqueue(new Callback<List<Cidade>>() {
             @Override
@@ -257,7 +256,7 @@ public class CidadesActivity extends AppCompatActivity {
                     String nomeSelecionado = filtroAtual();
 
                     Cidade todas = new Cidade();
-                    todas.setNome("Todas as cidades");
+                    todas.setNome(getString(R.string.todasCidades));
 
                     cidadesSpinner.clear();
                     cidadesSpinner.add(todas);
@@ -277,7 +276,7 @@ public class CidadesActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Cidade>> call, Throwable t) {
-                Toast.makeText(CidadesActivity.this, "Erro ao carregar cidades",
+                Toast.makeText(CidadesActivity.this, getString(R.string.erroCarregarCidades),
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -286,15 +285,15 @@ public class CidadesActivity extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Opções de cidade");
-        menu.add(0, 1, 0, "Editar cidade");
-        menu.add(0, 2, 1, "Remover cidade");
+        menu.setHeaderTitle(R.string.opcoesCidade);
+        menu.add(0, 1, 0, R.string.editarCidadeMenu);
+        menu.add(0, 2, 1, R.string.removerCidadeMenu);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        if(info == null) return super.onContextItemSelected(item);
+        if (info == null) return super.onContextItemSelected(item);
         Cidade cidade = cidades.get(info.position);
 
         switch (item.getItemId()) {

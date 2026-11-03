@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gerenciamento de Cidades"
+        android:text="@string/gerenciamentoCidades"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="12dp"/>
@@ -18,7 +18,7 @@
         android:id="@+id/edNomeCidade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nome da Cidade"
+        android:hint="@string/nome"
         android:inputType="text"
         android:layout_marginBottom="8dp"/>
 
@@ -26,7 +26,7 @@
         android:id="@+id/edDddCidade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="DDD"
+        android:hint="@string/ddd"
         android:inputType="number"
         android:layout_marginBottom="8dp"/>
 
@@ -34,13 +34,13 @@
         android:id="@+id/btnSalvarCidade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Salvar"
+        android:text="@string/salvar"
         android:layout_marginEnd="8dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Filtro de cidade:"
+        android:text="@string/filtrarCidade"
         android:textSize="14sp"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"/>

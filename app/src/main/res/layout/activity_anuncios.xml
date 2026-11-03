@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gerenciamento de Anúncios"
+        android:text="@string/gerenciamentoAnuncios"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="12dp"/>
@@ -24,11 +24,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- ===== FILTROS ===== -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Filtrar anúncios"
+                android:text="@string/filtrarAnuncio"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="4dp"/>
@@ -36,7 +35,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Modelo:"
+                android:text="@string/modelo"
                 android:textSize="14sp"/>
 
             <Spinner
@@ -61,7 +60,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ano inicial:"
+                        android:text="@string/anoInicial"
                         android:textSize="14sp"/>
 
                     <Spinner
@@ -79,7 +78,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ano final:"
+                        android:text="@string/anoFinal"
                         android:textSize="14sp"/>
 
                     <Spinner
@@ -105,7 +104,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Valor mínimo:"
+                        android:text="@string/valorMinimo"
                         android:textSize="14sp"/>
 
                     <Spinner
@@ -123,7 +122,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Valor máximo:"
+                        android:text="@string/valorMaximo"
                         android:textSize="14sp"/>
 
                     <Spinner
@@ -136,7 +135,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Novo anúncio"
+                android:text="@string/novoAnuncio"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="4dp"/>
@@ -144,7 +143,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Modelo:"
+                android:text="@string/modelo"
                 android:textSize="14sp"
                 android:layout_marginBottom="4dp"/>
 
@@ -157,7 +156,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cidade:"
+                android:text="@string/cidade"
                 android:textSize="14sp"
                 android:layout_marginBottom="4dp"/>
 
@@ -171,7 +170,7 @@
                 android:id="@+id/edDescricao"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Descrição"
+                android:hint="@string/descricao"
                 android:inputType="text"
                 android:layout_marginBottom="8dp"/>
 
@@ -179,7 +178,7 @@
                 android:id="@+id/edCor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Cor"
+                android:hint="@string/cor"
                 android:inputType="text"
                 android:layout_marginBottom="8dp"/>
 
@@ -187,7 +186,7 @@
                 android:id="@+id/edValor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor"
+                android:hint="@string/valor"
                 android:inputType="numberDecimal"
                 android:layout_marginBottom="8dp"/>
 
@@ -195,7 +194,7 @@
                 android:id="@+id/edAno"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ano"
+                android:hint="@string/ano"
                 android:inputType="number"
                 android:layout_marginBottom="8dp"/>
 
@@ -203,7 +202,7 @@
                 android:id="@+id/edKm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Km"
+                android:hint="@string/km"
                 android:inputType="number"
                 android:layout_marginBottom="8dp"/>
 
@@ -211,7 +210,7 @@
                 android:id="@+id/btSalvarAnuncio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Salvar"
+                android:text="@string/salvar"
                 android:layout_marginEnd="8dp"/>
         </LinearLayout>
     </ScrollView>
