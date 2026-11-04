@@ -68,9 +68,7 @@ public class Anuncio {
         this.ano = ano;
     }
 
-    public Integer getKm() {
-        return km;
-    }
+    public Integer getKm() { return km; }
 
     public void setKm(Integer km) {
         this.km = km;
@@ -84,9 +82,7 @@ public class Anuncio {
         this.idCidade = idCidade;
     }
 
-    public Long getIdModelo() {
-        return idModelo;
-    }
+    public Long getIdModelo() { return idModelo; }
 
     public void setIdModelo(Long idModel) {
         this.idModelo = idModel;

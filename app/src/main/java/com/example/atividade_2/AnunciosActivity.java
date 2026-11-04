@@ -29,6 +29,7 @@ import com.example.atividade_2.model.Cidade;
 import com.example.atividade_2.model.Modelo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +48,7 @@ public class AnunciosActivity extends AppCompatActivity {
     ModeloAPIService serviceModelo;
     CidadeAPIService serviceCidade;
 
-    Spinner spinnerModelo, spinnerCidade;
+    Spinner spinnerModelo, spinnerCidade, spinnerFiltroTipo;
     EditText edDescricao, edCor, edValor, edAno, edKm;
 
     Spinner spinnerFiltroModelo, spinnerFiltroAnoInicial, spinnerFiltroAnoFinal,
@@ -79,6 +80,7 @@ public class AnunciosActivity extends AppCompatActivity {
         edKm = findViewById(R.id.edKm);
 
         spinnerFiltroModelo = findViewById(R.id.spinnerFiltroModelo);
+        spinnerFiltroTipo = findViewById(R.id.spinnerFiltroTipo);
         spinnerFiltroAnoInicial = findViewById(R.id.spinnerFiltroAnoInicial);
         spinnerFiltroAnoFinal = findViewById(R.id.spinnerFiltroAnoFinal);
         spinnerFiltroMin = findViewById(R.id.spinnerFiltroMin);
@@ -125,6 +127,11 @@ public class AnunciosActivity extends AppCompatActivity {
         spinnerFiltroMin.setAdapter(criarAdapter(valores));
         spinnerFiltroMax.setAdapter(criarAdapter(valores));
 
+        List<String> tipos = new ArrayList<>();
+        tipos.add(getString(R.string.qualquer));
+        tipos.addAll(Arrays.asList("SEDAN", "HATCH", "SUV", "CAMIONETE"));
+        spinnerFiltroTipo.setAdapter(criarAdapter(tipos));
+
         AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -141,6 +148,7 @@ public class AnunciosActivity extends AppCompatActivity {
         spinnerFiltroAnoFinal.setOnItemSelectedListener(listener);
         spinnerFiltroMin.setOnItemSelectedListener(listener);
         spinnerFiltroMax.setOnItemSelectedListener(listener);
+        spinnerFiltroTipo.setOnItemSelectedListener(listener);
     }
 
     ArrayAdapter<String> criarAdapter(List<String> itens) {
@@ -155,6 +163,11 @@ public class AnunciosActivity extends AppCompatActivity {
         Object itemModelo = spinnerFiltroModelo.getSelectedItem();
         if (itemModelo instanceof Modelo) {
             idModelo = ((Modelo) itemModelo).getId();
+        }
+
+        String tipo = null;
+        if (spinnerFiltroTipo.getSelectedItemPosition() > 0) {
+            tipo = (String) spinnerFiltroTipo.getSelectedItem();
         }
 
         int posAnoIni = spinnerFiltroAnoInicial.getSelectedItemPosition();
@@ -176,7 +189,7 @@ public class AnunciosActivity extends AppCompatActivity {
             return;
         }
 
-        serviceAnuncio.listar(idModelo, null, anoInicial, anoFinal, min, max)
+        serviceAnuncio.listar(idModelo, tipo, anoInicial, anoFinal, min, max)
                 .enqueue(new Callback<List<Anuncio>>() {
                     @Override
                     public void onResponse(Call<List<Anuncio>> call, Response<List<Anuncio>> response) {
