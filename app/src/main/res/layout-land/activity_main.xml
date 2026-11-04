@@ -18,31 +18,50 @@
         android:textStyle="bold"
         android:layout_marginBottom="32dp"/>
 
-    <Button
-        android:id="@+id/btnMarcas"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/gerenciarMarcas"
-        android:layout_marginBottom="16dp"/>
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnModelos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/gerenciarModelos"
-        android:layout_marginBottom="16dp"/>
+        <Button
+            android:id="@+id/btnMarcas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gerenciarMarcas"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/btnCidades"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/gerenciarCidades"
-        android:layout_marginBottom="16dp"/>
+        <Button
+            android:id="@+id/btnModelos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gerenciarModelos"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="16dp"/>
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btnAnuncios"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/gerenciarAnuncios"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCidades"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gerenciarCidades"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnAnuncios"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gerenciarAnuncios"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
 
 </LinearLayout>

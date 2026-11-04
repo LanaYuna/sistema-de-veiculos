@@ -14,47 +14,69 @@
         android:textStyle="bold"
         android:layout_marginBottom="12dp"/>
 
-    <EditText
-        android:id="@+id/edNomeCidade"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/nome"
-        android:inputType="text"
-        android:layout_marginBottom="8dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/edDddCidade"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/ddd"
-        android:inputType="number"
-        android:layout_marginBottom="8dp"/>
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp">
 
-    <Button
-        android:id="@+id/btnSalvarCidade"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/salvar"
-        android:layout_marginEnd="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/filtrarCidade"
-        android:textSize="14sp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp"/>
+                <EditText
+                    android:id="@+id/edNomeCidade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/nome"
+                    android:inputType="text"
+                    android:layout_marginBottom="8dp"/>
 
-    <Spinner
-        android:id="@+id/spinnerCidade"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"/>
+                <EditText
+                    android:id="@+id/edDddCidade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ddd"
+                    android:inputType="number"
+                    android:layout_marginBottom="8dp"/>
 
-    <ListView
-        android:id="@+id/lista_cidades"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+                <Button
+                    android:id="@+id/btnSalvarCidade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/salvar"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filtrarCidade"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"/>
+
+                <Spinner
+                    android:id="@+id/spinnerCidade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ListView
+            android:id="@+id/lista_cidades"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
 
 </LinearLayout>

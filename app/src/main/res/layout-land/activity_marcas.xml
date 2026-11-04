@@ -14,20 +14,43 @@
         android:textStyle="bold"
         android:layout_marginBottom="12dp"/>
 
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/nome"
-        android:id="@+id/edMarca"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/confirmar"
-        android:id="@+id/btnConfirmar"/>
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="0sp"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:id="@+id/lista_marcas"/>
+        android:orientation="horizontal">
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/nome"
+                    android:id="@+id/edMarca"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/confirmar"
+                    android:id="@+id/btnConfirmar"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ListView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:id="@+id/lista_marcas"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -367,6 +367,7 @@ public class AnunciosActivity extends AppCompatActivity {
         inputKm.setHint(R.string.km);
         inputKm.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
         inputKm.setText(String.valueOf(anuncio.getKm()));
+
         layout.addView(inputKm);
 
         ScrollView scroll = new ScrollView(this);
