@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/gerenciamentoAnuncios"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filtrarAnuncio"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/modelo"
+                android:textSize="14sp"/>
+
+            <Spinner
+                android:id="@+id/spinnerFiltroModelo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/anoInicial"
+                        android:textSize="14sp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerFiltroAnoInicial"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/anoFinal"
+                        android:textSize="14sp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerFiltroAnoFinal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/valorMinimo"
+                        android:textSize="14sp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerFiltroMin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/valorMaximo"
+                        android:textSize="14sp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerFiltroMax"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/novoAnuncio"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/modelo"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerModelo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cidade"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerCidade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/edDescricao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/descricao"
+                android:inputType="text"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/edCor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/cor"
+                android:inputType="text"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/edValor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/valor"
+                android:inputType="numberDecimal"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/edAno"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/ano"
+                android:inputType="number"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/edKm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/km"
+                android:inputType="number"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/btSalvarAnuncio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/salvar"
+                android:layout_marginEnd="8dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <ListView
+        android:id="@+id/lista_anuncios"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>
